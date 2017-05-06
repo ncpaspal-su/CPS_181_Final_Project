@@ -1,0 +1,41 @@
+import requests
+import json 
+
+def weather_location_lookup(location):
+    if location != 'QUIT':
+        url = 'http://maps.googleapis.com/maps/api/geocode/json'
+        options = { 'address' : location } 
+        response = requests.get(url, params = options)            
+        geodata = response.json()
+        coords = geodata['results'][0]['geometry']['location']
+        lat = coords['lat']
+        lng = coords['lng']
+        key = '5c74b6ce9cfe03b4e8780a360b5b6115'
+        url = 'https://api.darksky.net/forecast/%s/%s,%s' % (key,lat,lng)
+        response = requests.get(url)
+        weather_data = response.json()
+        conditions = weather_data['currently']['icon']  
+        results = print('The current weather conditions for %s is "%s"' % (location,conditions))
+        return results
+    
+location = 0     
+print("Welcome to Current Weather Lookup!")
+print("Please enter an address, location, or monument")
+
+try:
+    while True:
+        if location != 'QUIT':
+            location = input("Enter a location or type 'quit': ").upper()
+            weather_location_lookup(location)
+        elif location == 'QUIT':
+            print("Thank you for using Current Weather Lookup! ")
+            break
+except IndexError:
+    print("PLEASE ENTER A VALID LOCATION!")
+    while True:
+        if location != 'QUIT':
+            location = input("Enter a location or type 'quit': ").upper()
+            weather_location_lookup(location)
+        elif location == 'QUIT':
+            print("Thank you for using Current Weather Lookup! ")
+            break
